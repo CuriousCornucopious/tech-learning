@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛒 Grocery Game</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', 'Chalkboard', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c5f2d;
+            font-size: 2rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px white;
+        }
+        
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .menu-btn {
+            padding: 25px 15px;
+            font-size: 1.3rem;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            color: white;
+            font-weight: bold;
+        }
+        
+        .menu-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        
+        .menu-btn.list { background: #FF6B6B; }
+        .menu-btn.shop { background: #4ECDC4; }
+        .menu-btn.recipe { background: #FFE66D; color: #333; }
+        .menu-btn.budget { background: #95E1D3; color: #333; }
+        .menu-btn.export { background: #2196F3; }
+        .menu-btn.parent { background: #9C27B0; }
+        
+        .screen {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        .back-btn {
+            background: #666;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .cat-btn {
+            padding: 15px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .cat-btn.produce { background: #4CAF50; }
+        .cat-btn.meat { background: #E91E63; }
+        .cat-btn.dairy { background: #2196F3; }
+        .cat-btn.pantry { background: #FF9800; }
+        .cat-btn.frozen { background: #00BCD4; }
+        .cat-btn.beverages { background: #9C27B0; }
+        .cat-btn.snacks { background: #FF5722; }
+        .cat-btn.condiments { background: #795548; }
+        .cat-btn.baking { background: #E91E63; }
+        .cat-btn.quick { background: #607D8B; }
+        .cat-btn.cleaning { background: #3F51B5; }
+        .cat-btn.personal { background: #00BCD4; }
+        .cat-btn.pets { background: #8BC34A; }
+        
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .item-btn {
+            padding: 15px 10px;
+            font-size: 1rem;
+            border: 3px solid #ddd;
+            border-radius: 15px;
+            cursor: pointer;
+            background: white;
+            transition: all 0.2s;
+        }
+        
+        .item-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .item-btn.added {
+            background: #4CAF50;
+            border-color: #4CAF50;
+            color: white;
+        }
+        
+        .list-display {
+            background: #f9f9f9;
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .list-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .list-item input {
+            width: 25px;
+            height: 25px;
+            margin-right: 10px;
+        }
+        
+        .list-item.checked {
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+        
+        .remove-btn {
+            margin-left: auto;
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .recipe-card {
+            background: #fff3cd;
+            border-radius: 15px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            border: 3px solid #FFE66D;
+        }
+        
+        .recipe-card:hover {
+            background: #ffe8a1;
+        }
+        
+        .budget-display {
+            text-align: center;
+            padding: 20px;
+            background: #f0f0f0;
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .budget-amount {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .budget-over {
+            color: #ff4444;
+        }
+        
+        .budget-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .budget-item input {
+            width: 25px;
+            height: 25px;
+        }
+        
+        .budget-item.selected {
+            background: #e8f5e9;
+            border: 2px solid #4CAF50;
+        }
+        
+        .emoji {
+            font-size: 1.5rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: #888;
+        }
+        
+        .clear-btn {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+        
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .pop {
+            animation: pop 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛒 Grocery Game</h1>
+        
+        <!-- MAIN MENU -->
+        <div id="menu" class="menu">
+            <button class="menu-btn list" onclick="showScreen('list')">📋 My List</button>
+            <button class="menu-btn shop" onclick="showScreen('shop')">🏪 Shop</button>
+            <button class="menu-btn recipe" onclick="showScreen('recipes')">🍳 Recipes</button>
+            <button class="menu-btn budget" onclick="showScreen('budget')">💰 Budget</button>
+            <button class="menu-btn export" onclick="exportToAnyList()" style="background:#2196F3;">📤 Export</button>
+            <button class="menu-btn parent" onclick="showScreen('parent')" style="background:#9C27B0;">👩 Parent</button>
+        </div>
+        
+        <!-- CATEGORIES SCREEN -->
+        <div id="categories" class="screen">
+            <button class="back-btn" onclick="showScreen('menu')">⬅️ Back</button>
+            <h2>Pick a Category</h2>
+            <div class="categories">
+                <button class="cat-btn produce" onclick="showItems('produce')">🍎 Produce</button>
+                <button class="cat-btn meat" onclick="showItems('meat')">🥩 Meat</button>
+                <button class="cat-btn dairy" onclick="showItems('dairy')">🥛 Dairy</button>
+                <button class="cat-btn pantry" onclick="showItems('pantry')">🥫 Pantry</button>
+                <button class="cat-btn frozen" onclick="showItems('frozen')">🧊 Frozen</button>
+                <button class="cat-btn beverages" onclick="showItems('beverages')">🥤 Drinks</button>
+                <button class="cat-btn snacks" onclick="showItems('snacks')">🍿 Snacks</button>
+                <button class="cat-btn condiments" onclick="showItems('condiments')">🧂 Condiments</button>
+                <button class="cat-btn baking" onclick="showItems('baking')">🍪 Baking</button>
+                <button class="cat-btn quick" onclick="showItems('quick')">🍱 Quick Meals</button>
+            </div>
+        </div>
+        
+        <!-- ITEMS SCREEN -->
+        <div id="items" class="screen">
+            <button class="back-btn" onclick="showScreen('categories')">⬅️ Categories</button>
+            <h2 id="category-title">Items</h2>
+            <div id="items-grid" class="items-grid"></div>
+        </div>
+        
+        <!-- MY LIST SCREEN -->
+        <div id="list" class="screen">
+            <button class="back-btn" onclick="showScreen('menu')">⬅️ Menu</button>
+            <h2>📋 My List</h2>
+            <button class="cat-btn" style="background:#4CAF50; width:100%; margin-bottom:10px;" onclick="showScreen('categories')">➕ Add Items</button>
+            <div id="my-list" class="list-display"></div>
+            <button class="clear-btn" onclick="clearList()">🗑️ Clear List</button>
+        </div>
+        
+        <!-- SHOP MODE SCREEN -->
+        <div id="shop" class="screen">
+            <button class="back-btn" onclick="showScreen('menu')">⬅️ Menu</button>
+            <h2>🏪 Shop Mode</h2>
+            <div id="shop-list" class="list-display"></div>
+        </div>
+        
+        <!-- RECIPES SCREEN -->
+        <div id="recipes" class="screen">
+            <button class="back-btn" onclick="showScreen('menu')">⬅️ Menu</button>
+            <h2>🍳 Recipes</h2>
+            <div id="recipe-list"></div>
+        </div>
+        
+        <!-- BUDGET GAME SCREEN -->
+        <div id="budget" class="screen">
+            <button class="back-btn" onclick="showScreen('menu')">⬅️ Menu</button>
+            <h2>💰 Budget Challenge</h2>
+            <div class="budget-display">
+                <div>Budget: <span class="budget-amount" id="budget-display">$20</span></div>
+                <div>Spent: <span id="spent-display">$0</span></div>
+            </div>
+            <button class="cat-btn" style="background:#FF9800; width:100%; margin-bottom:10px;" onclick="addRecipeToBudget()">Add Recipe</button>
+            <div id="budget-items"></div>
+        </div>
+        
+        <!-- PARENT DASHBOARD SCREEN -->
+        <div id="parent" class="screen">
+            <button class="back-btn" onclick="showScreen('menu')">⬅️ Menu</button>
+            <h2>👩 Parent Dashboard</h2>
+            <div style="background:#f9f9f9; border-radius:15px; padding:15px; margin-top:15px;">
+                <p><strong>Your child's list:</strong></p>
+                <div id="parent-list" class="list-display"></div>
+                <button class="cat-btn" style="background:#4CAF50; width:100%; margin-top:10px;" onclick="showScreen('categories')">➕ Edit List</button>
+            </div>
+            <div style="background:#e8f5e9; border-radius:15px; padding:15px; margin-top:15px;">
+                <p><strong>Actions:</strong></p>
+                <button class="cat-btn" style="background:#2196F3; width:100%; margin-top:10px;" onclick="exportToAnyList()">📤 Export to AnyList</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DATA
+        const items = {
+            produce: ['Bananas', 'Apples', 'Oranges', 'Berries', 'Avocados', 'Spinach', 'Lettuce', 'Carrots', 'Broccoli', 'Potatoes', 'Onions', 'Garlic', 'Tomatoes', 'Cucumbers', 'Lemons', 'Cilantro', 'Parsley', 'Basil'],
+            meat: ['Chicken breasts', 'Chicken thighs', 'Ground beef', 'Ground turkey', 'Bacon', 'Sausage', 'Salmon', 'Tilapia', 'Eggs'],
+            dairy: ['Milk', 'Butter', 'Cheddar cheese', 'Mozzarella', 'Yogurt', 'Sour cream', 'Cream cheese'],
+            pantry: ['White rice', 'Brown rice', 'Pasta', 'Quinoa', 'Oats', 'Bread', 'Tortillas', 'Black beans', 'Kidney beans', 'Chickpeas', 'Canned tomatoes', 'Broth', 'Pasta sauce', 'Peanut butter', 'Jelly', 'Honey', 'Maple syrup', 'Olive oil', 'Vegetable oil', 'Soy sauce', 'Garlic powder', 'Onion powder', 'Italian seasoning', 'Salt & pepper', 'Sugar', 'Flour'],
+            frozen: ['Frozen berries', 'Frozen peas', 'Frozen corn', 'Ice cream', 'Frozen pizza', 'Chicken nuggets', 'Frozen fruit'],
+            beverages: ['Coffee', 'Tea', 'Orange juice', 'Apple juice', 'Soda', 'Sparkling water', 'Water jug'],
+            snacks: ['Crackers', 'Graham crackers', 'Granola bars', 'Almonds', 'Peanuts', 'Dried fruit', 'Popcorn', 'Chips', 'Chocolate', 'Mac & cheese'],
+            condiments: ['Ketchup', 'Mustard', 'Mayo', 'BBQ sauce', 'Hot sauce', 'Salsa', 'Salad dressing', 'Caprisuns'],
+            baking: ['White sugar', 'Brown sugar', 'Baking powder', 'Baking soda', 'Yeast', 'Vanilla', 'Cornstarch', 'Chocolate chips'],
+            quick: ['Boxed mac & cheese', 'Ramen', 'Canned soup', 'Frozen burritos', 'Salad kits', 'Rotisserie chicken', 'Deli meat', 'Deli cheese']
+        };
+        
+        const recipes = [
+            { name: 'Taco Night 🌮', ingredients: ['Ground beef', 'Tortillas', 'Cheese', 'Lettuce', 'Tomatoes', 'Salsa', 'Sour cream'], price: 15 },
+            { name: 'Pancakes 🥞', ingredients: ['Flour', 'Eggs', 'Milk', 'Butter', 'Maple syrup', 'Baking powder'], price: 8 },
+            { name: 'PB&J Sandwich 🥪', ingredients: ['Bread', 'Peanut butter', 'Jelly'], price: 3 },
+            { name: 'Spaghetti 🍝', ingredients: ['Pasta', 'Pasta sauce', 'Ground beef', 'Cheese'], price: 7 },
+            { name: 'Fruit Salad 🥗', ingredients: ['Bananas', 'Apples', 'Berries', 'Oranges', 'Grapes'], price: 10 },
+            { name: 'Grilled Cheese 🧀', ingredients: ['Bread', 'Cheese', 'Butter'], price: 4 }
+        ];
+        
+        let myList = JSON.parse(localStorage.getItem('groceryList')) || [];
+        let budgetItems = [];
+        let currentCategory = '';
+        
+        // SCREENS
+        function showScreen(screen) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screen).classList.add('active');
+            
+            if (screen === 'list') renderMyList();
+            if (screen === 'shop') renderShopList();
+            if (screen === 'recipes') renderRecipes();
+            if (screen === 'budget') renderBudgetItems();
+            if (screen === 'parent') renderParentList();
+        }
+        
+        // ITEMS
+        function showItems(category) {
+            currentCategory = category;
+            document.getElementById('category-title').textContent = '🥗 ' + category.charAt(0).toUpperCase() + category.slice(1);
+            
+            const grid = document.getElementById('items-grid');
+            grid.innerHTML = '';
+            
+            const categoryItems = items[category] || [];
+            categoryItems.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = 'item-btn';
+                btn.textContent = item;
+                if (myList.includes(item)) {
+                    btn.classList.add('added');
+                    btn.textContent = '✓ ' + item;
+                }
+                btn.onclick = () => addToList(item, btn);
+                grid.appendChild(btn);
+            });
+            
+            showScreen('items');
+        }
+        
+        function addToList(item, btn) {
+            if (!myList.includes(item)) {
+                myList.push(item);
+                localStorage.setItem('groceryList', JSON.stringify(myList));
+                btn.classList.add('added');
+                btn.textContent = '✓ ' + item;
+                btn.classList.add('pop');
+            }
+        }
+        
+        // MY LIST
+        function renderMyList() {
+            const list = document.getElementById('my-list');
+            if (myList.length === 0) {
+                list.innerHTML = '<div class="empty-state">Your list is empty! Tap "Add Items" to start.</div>';
+                return;
+            }
+            
+            list.innerHTML = myList.map(item => `
+                <div class="list-item">
+                    <span>${item}</span>
+                    <button class="remove-btn" onclick="removeFromList('${item}')">✕</button>
+                </div>
+            `).join('');
+        }
+        
+        function removeFromList(item) {
+            myList = myList.filter(i => i !== item);
+            localStorage.setItem('groceryList', JSON.stringify(myList));
+            renderMyList();
+        }
+        
+        function clearList() {
+            if (confirm('Clear all items from your list?')) {
+                myList = [];
+                localStorage.setItem('groceryList', JSON.stringify(myList));
+                renderMyList();
+            }
+        }
+        
+        // SHOP MODE
+        function renderShopList() {
+            const list = document.getElementById('shop-list');
+            if (myList.length === 0) {
+                list.innerHTML = '<div class="empty-state">No items to shop! Add things to your list first.</div>';
+                return;
+            }
+            
+            list.innerHTML = myList.map(item => `
+                <div class="list-item" id="shop-${item.replace(/\s/g, '-')}">
+                    <input type="checkbox" onchange="toggleShopItem('${item}')">
+                    <span>${item}</span>
+                </div>
+            `).join('');
+        }
+        
+        function toggleShopItem(item) {
+            const div = document.getElementById('shop-' + item.replace(/\s/g, '-'));
+            div.classList.toggle('checked');
+        }
+        
+        // RECIPES
+        function renderRecipes() {
+            const list = document.getElementById('recipe-list');
+            list.innerHTML = recipes.map(recipe => `
+                <div class="recipe-card" onclick="addRecipeToList('${recipe.name}')">
+                    <strong>${recipe.name}</strong><br>
+                    <small>${recipe.ingredients.join(', ')}</small><br>
+                    <strong>~$${recipe.price}</strong>
+                </div>
+            `).join('');
+        }
+        
+        function addRecipeToList(recipeName) {
+            const recipe = recipes.find(r => r.name === recipeName);
+            recipe.ingredients.forEach(ing => {
+                if (!myList.includes(ing)) {
+                    myList.push(ing);
+                }
+            });
+            localStorage.setItem('groceryList', JSON.stringify(myList));
+            alert(`Added ${recipe.name} ingredients to your list!`);
+        }
+        
+        // BUDGET GAME
+        let budgetSpent = 0;
+        
+        function renderBudgetItems() {
+            const list = document.getElementById('budget-items');
+            
+            // Get unique items from all recipes
+            const allItems = [];
+            recipes.forEach(r => {
+                r.ingredients.forEach(ing => {
+                    if (!allItems.find(i => i.name === ing)) {
+                        allItems.push({ name: ing, price: Math.floor(Math.random() * 5) + 1 });
+                    }
+                });
+            });
+            
+            list.innerHTML = allItems.map(item => `
+                <div class="budget-item" id="budget-${item.name.replace(/\s/g, '-')}">
+                    <span>${item.name}</span>
+                    <span>$${item.price}</span>
+                    <input type="checkbox" onchange="toggleBudgetItem('${item.name}', ${item.price})">
+                </div>
+            `).join('');
+            
+            updateBudgetDisplay();
+        }
+        
+        function toggleBudgetItem(item, price) {
+            const div = document.getElementById('budget-' + item.replace(/\s/g, '-'));
+            div.classList.toggle('selected');
+            updateBudgetDisplay();
+        }
+        
+        function updateBudgetDisplay() {
+            const checkboxes = document.querySelectorAll('#budget-items input:checked');
+            budgetSpent = checkboxes.length * 3; // Average $3 per item selected
+            document.getElementById('spent-display').textContent = '$' + budgetSpent;
+            
+            const display = document.getElementById('budget-display');
+            if (budgetSpent > 20) {
+                display.classList.add('budget-over');
+                display.textContent = '-$' + (budgetSpent - 20);
+            } else {
+                display.classList.remove('budget-over');
+                display.textContent = '$' + (20 - budgetSpent);
+            }
+        }
+        
+        function addRecipeToBudget() {
+            alert('Pick items from the list to add to your cart! Try to stay under $20.');
+        }
+        
+        // Parent Dashboard
+        function renderParentList() {
+            const list = document.getElementById('parent-list');
+            if (myList.length === 0) {
+                list.innerHTML = '<div class="empty-state">No items yet! Let your child add items.</div>';
+                return;
+            }
+            
+            list.innerHTML = myList.map(item => `
+                <div class="list-item">
+                    <span>${item}</span>
+                    <button class="remove-btn" onclick="removeFromList('${item}')">✕</button>
+                </div>
+            `).join('');
+        }
+        
+        // Export to AnyList
+        function exportToAnyList() {
+            if (myList.length === 0) {
+                alert('Your list is empty! Add items first.');
+                return;
+            }
+            
+            // Format for AnyList API import
+            let exportText = 'name,category,quantity\n';
+            myList.forEach(item => {
+                // Guess category based on item name
+                let category = 'Other';
+                if (['Bananas','Apples','Oranges','Berries','Avocados','Spinach','Lettuce','Carrots','Broccoli','Potatoes','Onions','Garlic','Tomatoes','Cucumbers','Lemons','Cilantro','Parsley','Basil'].includes(item)) category = 'Produce';
+                else if (['Chicken breasts','Chicken thighs','Ground beef','Ground turkey','Bacon','Sausage','Salmon','Tilapia','Eggs'].includes(item)) category = 'Meat';
+                else if (['Milk','Butter','Cheddar cheese','Mozzarella','Yogurt','Sour cream','Cream cheese'].includes(item)) category = 'Dairy';
+                else if (['White rice','Brown rice','Pasta','Quinoa','Oats','Bread','Tortillas','Black beans','Kidney beans','Chickpeas','Canned tomatoes','Broth','Pasta sauce','Peanut butter','Jelly','Honey','Maple syrup','Olive oil','Vegetable oil','Soy sauce','Garlic powder','Onion powder','Italian seasoning','Salt & pepper','Sugar','Flour'].includes(item)) category = 'Pantry';
+                else if (['Frozen berries','Frozen peas','Frozen corn','Ice cream','Frozen pizza','Chicken nuggets','Frozen fruit'].includes(item)) category = 'Frozen';
+                else if (['Coffee','Tea','Orange juice','Apple juice','Soda','Sparkling water','Water jug'].includes(item)) category = 'Beverages';
+                else if (['Crackers','Graham crackers','Granola bars','Almonds','Peanuts','Dried fruit','Popcorn','Chips','Chocolate','Mac & cheese'].includes(item)) category = 'Snacks';
+                
+                exportText += item + ',,' + category + ',1\n';
+            });
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(exportText).then(() => {
+                alert('✅ List copied to clipboard!\n\nNow go to AnyList → Import → Paste to import your list.');
+            }).catch(() => {
+                // Fallback: show in alert
+                alert('✅ List ready!\n\nFormat:\n' + exportText + '\n\nCopy this manually to AnyList.');
+            });
+        }
+        
+        // Init
+        showScreen('menu');
+    </script>
+</body>
+</html>
