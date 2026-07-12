@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Grocery Game Outline v2 - Family Edition</title>
+    <title>Grocery Game Outline v2.1</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: Georgia, serif; font-size: 12pt; line-height: 1.4; padding: 30px; max-width: 800px; margin: 0 auto; }
@@ -14,89 +14,82 @@
         th { background: #ddd; }
         .section { margin-top: 15px; }
         .list { margin-left: 20px; }
-        .emoji { font-size: 14pt; }
         .done { background: #e8f5e9; border-left: 3px solid #4CAF50; padding-left: 10px; }
-        .todo { color: #666; font-style: italic; }
+        .todo { background: #fff3cd; border-left: 3px solid #ff9800; padding-left: 10px; }
         .future { color: #888; font-style: italic; }
         @media print { body { padding: 15px; } }
     </style>
 </head>
 <body>
 
-<h1>🛒 Grocery Game Outline v2.0 — Family Edition</h1>
+<h1>🛒 Grocery Game Outline v2.1</h1>
 
 <div class="section">
-<h2>Main Menu (4 buttons)</h2>
+<h2>Main Menu (1 button)</h2>
 
-<ol>
-<li><strong>🛒 Shop</strong> → Choose Child or Parent → Shared list with different permissions</li>
-<li><strong>🍳 Recipes</strong> — Recipe cards with ingredients, click to add all to list</li>
-<li><strong>💰 Budget</strong> — Add recipes, track spending vs $20 budget</li>
-<li><strong>📋 Lists</strong> — Export current list, future: history & store sorting</li>
-</ol>
+<p><strong>🛒 Shop</strong> — That's it! Everything else flows from here.</p>
 </div>
 
 <div class="section">
 <h2>Shop Flow</h2>
 
 <ol>
-<li>Click <strong>Shop</strong> → "Who's Shopping?" screen</li>
+<li>Click <strong>🛒 Shop</strong> → "Who's Shopping?" screen</li>
 <li>Choose <strong>👶 Child</strong> or <strong>👩 Parent</strong></li>
-<li><strong>Child view:</strong> checkboxes, add items, NO remove button</li>
-<li><strong>Parent view:</strong> checkboxes + remove (X) button</li>
-<li>Click <strong>➕ Add Items</strong> → 12 categories → items → back to list</li>
 </ol>
-</div>
 
-<div class="section">
-<h2>Categories (12)</h2>
-<table>
-<tr><th>Category</th><th>Category</th><th>Category</th></tr>
-<tr><td>Produce</td><td>Meat</td><td>Dairy</td></tr>
-<tr><td>Pantry</td><td>Frozen</td><td>Beverages</td></tr>
-<tr><td>Snacks</td><td>Condiments</td><td>Baking</td></tr>
-<tr><td>Quick</td><td>Cleaning</td><td>Personal</td></tr>
-<tr><td>Pets</td><td></td><td></td></tr>
-</table>
-</div>
-
-<div class="section done">
-<h2>✅ Built (v2.0)</h2>
+<h3>👶 Child View</h3>
 <ul class="list">
-<li>Single Shop button → choose Child or Parent</li>
-<li>Child: checkboxes only, no delete</li>
-<li>Parent: checkboxes + remove button</li>
-<li>12 categories with items</li>
-<li>Recipes (6) with "add to list"</li>
-<li>Budget tracker</li>
-<li>Export → Lists (item names only, 1 per line)</li>
-<li>Checkboxes persist in localStorage</li>
+<li>📋 My List (checkboxes, add items, NO delete)</li>
+<li>🍳 Simple Recipes (3-4 easy ones: PB&J, Grilled Cheese, Mac & Cheese, Fruit Salad)</li>
+<li>💰 Kid Budget (simple: "You have $20" - can't edit, just shows)</li>
+<li>➕ Add Items → categories</li>
+</ul>
+
+<h3>👩 Parent View</h3>
+<ul class="list">
+<li>📋 My List (checkboxes, add items, CAN delete)</li>
+<li>🍳 Full Recipes (all 6+ with prices, ingredient editing)</li>
+<li>💰 Full Budget (editable amount, tracks spent)</li>
+<li>📋 Lists → Export / Sort by Store / History</li>
+<li>➕ Add Items → categories</li>
 </ul>
 </div>
 
-<div class="section">
-<h2>🔄 Next Updates (v2.1)</h2>
+<div class="section done">
+<h2>✅ Built</h2>
 <ul class="list">
-<li>Add item prices to display</li>
-<li>Make budget editable (not fixed $20)</li>
-<li>Quantity +/- on items</li>
-<li>User avatars on items (show who added)</li>
-<li>Ingredient editing in recipes (uncheck before add)</li>
-<li>Store preferences per item</li>
+<li>Single Shop button</li>
+<li>Who's Shopping → choose Child or Parent</li>
+<li>Child: list + checkboxes, no delete</li>
+<li>Parent: list + checkboxes + delete</li>
+<li>12 categories</li>
+<li>6 recipes</li>
+<li>Budget tracker</li>
+<li>Lists/Export screen</li>
+</ul>
+</div>
+
+<div class="section todo">
+<h2>🔄 v2.1 Updates Needed</h2>
+<ul class="list">
+<li>Simplify recipes for Child view (show only 3-4 easy ones)</li>
+<li>Full recipes for Parent view (show all + prices)</li>
+<li>Kid Budget: show $20 limit, simple feedback if over</li>
+<li>Parent Budget: editable amount, tracks spent</li>
+<li>Move Recipes & Budget INTO Shop flow (not separate buttons)</li>
+<li>Rename Lists → keep under Parent only</li>
 </ul>
 </div>
 
 <div class="section future">
-<h2>📅 Future (v2.2+)</h2>
+<h2>📅 Future</h2>
 <ul class="list">
-<li>Multiple family members with avatars</li>
-<li>Voting system (visualize votes)</li>
-<li>Household inventory tracking</li>
-<li>House potluck (assign meal parts)</li>
-<li>Age-based requirements per child</li>
-<li>Activity tracking + themed activities</li>
-<li>List history</li>
-<li>Sort by store before export</li>
+<li>Multiple family members</li>
+<li>Avatars on items</li>
+<li>Voting system</li>
+<li>Inventory tracking</li>
+<li>Real budgeting for adults</li>
 </ul>
 </div>
 
@@ -105,9 +98,6 @@
 <div style="margin-top: 40px; text-align: center; font-size: 10pt; color: #666;">
 <em>Feedback and ideas from Amanda — the real brains behind the operation 😄</em>
 </div>
-
-<div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #000; text-align: center; font-size: 10pt;">
-Notes: _______________________________________________________________________ _______________________________________________________________________ _______________________________________________________________________ _______________________________________________________________________ _______________________________________________________________________ _______________________________________________________________________</div>
 
 </body>
 </html>

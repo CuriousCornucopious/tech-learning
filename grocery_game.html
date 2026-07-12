@@ -31,34 +31,31 @@
             text-shadow: 2px 2px white;
         }
         
+        /* Single button menu */
         .menu {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+            display: flex;
+            justify-content: center;
             margin-bottom: 20px;
         }
         
         .menu-btn {
-            padding: 25px 15px;
-            font-size: 1.3rem;
+            padding: 40px 60px;
+            font-size: 2rem;
             border: none;
-            border-radius: 20px;
+            border-radius: 25px;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.25);
             color: white;
             font-weight: bold;
         }
         
         .menu-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
         
-        .menu-btn.shop { background: #4ECDC4; }
-        .menu-btn.recipe { background: #FFE66D; color: #333; }
-        .menu-btn.budget { background: #95E1D3; color: #333; }
-        .menu-btn.export { background: #2196F3; }
+        .menu-btn.shop { background: linear-gradient(135deg, #4ECDC4, #44a08d); }
         
         .screen {
             display: none;
@@ -83,6 +80,7 @@
             margin-bottom: 15px;
         }
         
+        /* Who selector */
         .who-select {
             text-align: center;
             padding: 30px;
@@ -105,6 +103,7 @@
         .who-btn.child { background: #FF6B6B; color: white; }
         .who-btn.parent { background: #9C27B0; color: white; }
         
+        /* Categories grid */
         .categories {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -135,6 +134,7 @@
         .cat-btn.personal { background: #00BCD4; }
         .cat-btn.pets { background: #8BC34A; }
         
+        /* Items grid */
         .items-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -162,6 +162,7 @@
             color: white;
         }
         
+        /* List items */
         .list-display {
             background: #f9f9f9;
             border-radius: 15px;
@@ -201,6 +202,7 @@
             font-size: 1rem;
         }
         
+        /* Recipe cards */
         .recipe-card {
             background: #fff3cd;
             border-radius: 15px;
@@ -214,6 +216,7 @@
             background: #ffe8a1;
         }
         
+        /* Budget display */
         .budget-display {
             text-align: center;
             padding: 20px;
@@ -230,6 +233,33 @@
         
         .budget-over {
             color: #ff4444;
+        }
+        
+        /* Section buttons */
+        .section-btn {
+            padding: 15px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            margin: 5px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .section-btn.recipes { background: #FFE66D; color: #333; }
+        .section-btn.budget { background: #95E1D3; color: #333; }
+        .section-btn.lists { background: #2196F3; }
+        
+        /* Action buttons row */
+        .action-row {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .action-row .section-btn {
+            flex: 1;
         }
         
         .empty-state {
@@ -288,14 +318,10 @@
         <!-- MAIN MENU -->
         <div id="menu" class="menu">
             <button class="menu-btn shop" onclick="showScreen('shop')">🛒 Shop</button>
-            <button class="menu-btn recipe" onclick="showScreen('recipes')">🍳 Recipes</button>
-            <button class="menu-btn budget" onclick="showScreen('budget')">💰 Budget</button>
-            <button class="menu-btn export" onclick="showScreen('lists')">📋 Lists</button>
         </div>
         
         <!-- WHO'S SHOPPING? -->
         <div id="shop" class="screen">
-            <button class="back-btn" onclick="showScreen('menu')">⬅️ Menu</button>
             <h2>🛒 Who's Shopping?</h2>
             <div class="who-select">
                 <button class="who-btn child" onclick="startShopping('child')">👶 Child</button>
@@ -303,17 +329,29 @@
             </div>
         </div>
         
-        <!-- SHOPPING LIST (shared by both, permissions differ) -->
+        <!-- SHOPPING LIST (shared view with permissions) -->
         <div id="shopping-list" class="screen">
             <button class="back-btn" onclick="showScreen('shop')">⬅️ Who's Shopping?</button>
             <h2 id="list-title">🛒 My List</h2>
             <div id="shopper-badge"></div>
+            
+            <!-- Action buttons row -->
+            <div class="action-row">
+                <button class="section-btn recipes" onclick="showScreen('recipes')">🍳 Recipes</button>
+                <button class="section-btn budget" onclick="showScreen('budget')">💰 Budget</button>
+            </div>
+            
+            <!-- Only show Lists for Parent -->
+            <div id="lists-btn-row" style="display:none;">
+                <button class="section-btn lists" style="width:100%; margin-top:5px;" onclick="showScreen('lists')">📋 Lists</button>
+            </div>
+            
             <button class="add-items-btn" onclick="showScreen('categories')">➕ Add Items</button>
             <div id="list-items" class="list-display"></div>
             <button class="clear-btn" onclick="clearList()">🗑️ Clear All</button>
         </div>
         
-        <!-- CATEGORIES SCREEN -->
+        <!-- CATEGORIES -->
         <div id="categories" class="screen">
             <button class="back-btn" onclick="showScreen('shopping-list')">⬅️ Back to List</button>
             <h2>Pick a Category</h2>
@@ -334,23 +372,35 @@
             </div>
         </div>
         
-        <!-- ITEMS SCREEN -->
+        <!-- ITEMS -->
         <div id="items" class="screen">
             <button class="back-btn" onclick="showScreen('categories')">⬅️ Categories</button>
             <h2 id="category-title">Items</h2>
             <div id="items-grid" class="items-grid"></div>
         </div>
         
-        <!-- RECIPES SCREEN -->
+        <!-- RECIPES -->
         <div id="recipes" class="screen">
-            <button class="back-btn" onclick="showScreen('menu')">⬅️ Menu</button>
-            <h2>🍳 Recipes</h2>
+            <button class="back-btn" onclick="showScreen('shopping-list')">⬅️ Back to List</button>
+            <h2 id="recipes-title">🍳 Recipes</h2>
             <div id="recipe-list"></div>
         </div>
         
-        <!-- LISTS SCREEN -->
+        <!-- BUDGET -->
+        <div id="budget" class="screen">
+            <button class="back-btn" onclick="showScreen('shopping-list')">⬅️ Back to List</button>
+            <h2 id="budget-title">💰 Budget</h2>
+            <div class="budget-display">
+                <div>Budget: <span class="budget-amount" id="budget-display">$20</span></div>
+                <div>Spent: <span id="spent-display">$0</span></div>
+            </div>
+            <button class="cat-btn" style="background:#FF9800; width:100%; margin-bottom:10px;" onclick="addRecipeToBudget()">Add Recipe</button>
+            <div id="budget-items"></div>
+        </div>
+        
+        <!-- LISTS (Parent only) -->
         <div id="lists" class="screen">
-            <button class="back-btn" onclick="showScreen('menu')">⬅️ Menu</button>
+            <button class="back-btn" onclick="showScreen('shopping-list')">⬅️ Back to List</button>
             <h2>📋 Lists</h2>
             <div style="background:#f9f9f9; border-radius:15px; padding:15px; margin-top:15px;">
                 <p><strong>📥 Export Current List</strong></p>
@@ -358,24 +408,12 @@
             </div>
             <div style="background:#e8f5e9; border-radius:15px; padding:15px; margin-top:15px;">
                 <p><strong>🗂️ List History</strong></p>
-                <p style="color:#888; font-size:0.9rem; margin-top:10px;">Coming soon: Save and view past lists!</p>
+                <p style="color:#888; font-size:0.9rem; margin-top:10px;">Coming soon!</p>
             </div>
             <div style="background:#fff3cd; border-radius:15px; padding:15px; margin-top:15px;">
                 <p><strong>🏪 Sort by Store</strong></p>
-                <p style="color:#888; font-size:0.9rem; margin-top:10px;">Coming soon: Assign items to stores before exporting!</p>
+                <p style="color:#888; font-size:0.9rem; margin-top:10px;">Coming soon!</p>
             </div>
-        </div>
-        
-        <!-- BUDGET SCREEN -->
-        <div id="budget" class="screen">
-            <button class="back-btn" onclick="showScreen('menu')">⬅️ Menu</button>
-            <h2>💰 Budget Challenge</h2>
-            <div class="budget-display">
-                <div>Budget: <span class="budget-amount" id="budget-display">$20</span></div>
-                <div>Spent: <span id="spent-display">$0</span></div>
-            </div>
-            <button class="cat-btn" style="background:#FF9800; width:100%; margin-bottom:10px;" onclick="addRecipeToBudget()">Add Recipe</button>
-            <div id="budget-items"></div>
         </div>
     </div>
 
@@ -397,10 +435,18 @@
             pets: ['Dog food', 'Cat food', 'Cat litter', 'Dog treats', 'Cat toys', 'Dog shampoo', 'Flea treatment', 'Pet bowls', 'Leash', 'Waste bags']
         };
         
-        const recipes = [
+        // Simple recipes for kids
+        const simpleRecipes = [
+            { name: 'PB&J 🥪', ingredients: ['Bread', 'Peanut butter', 'Jelly'], price: 3 },
+            { name: 'Grilled Cheese 🧀', ingredients: ['Bread', 'Cheese', 'Butter'], price: 4 },
+            { name: 'Mac & Cheese 🍜', ingredients: ['Boxed mac & cheese'], price: 2 }
+        ];
+        
+        // Full recipes for parents
+        const fullRecipes = [
             { name: 'Taco Night 🌮', ingredients: ['Ground beef', 'Tortillas', 'Cheese', 'Lettuce', 'Tomatoes', 'Salsa', 'Sour cream'], price: 15 },
             { name: 'Pancakes 🥞', ingredients: ['Flour', 'Eggs', 'Milk', 'Butter', 'Maple syrup', 'Baking powder'], price: 8 },
-            { name: 'PB&J Sandwich 🥪', ingredients: ['Bread', 'Peanut butter', 'Jelly'], price: 3 },
+            { name: 'PB&J 🥪', ingredients: ['Bread', 'Peanut butter', 'Jelly'], price: 3 },
             { name: 'Spaghetti 🍝', ingredients: ['Pasta', 'Pasta sauce', 'Ground beef', 'Cheese'], price: 7 },
             { name: 'Fruit Salad 🥗', ingredients: ['Bananas', 'Apples', 'Berries', 'Oranges', 'Grapes'], price: 10 },
             { name: 'Grilled Cheese 🧀', ingredients: ['Bread', 'Cheese', 'Butter'], price: 4 }
@@ -409,7 +455,7 @@
         let myList = JSON.parse(localStorage.getItem('groceryList')) || [];
         let checkedItems = JSON.parse(localStorage.getItem('checkedItems')) || [];
         let budgetItems = [];
-        let currentShopper = 'child'; // 'child' or 'parent'
+        let currentShopper = 'child';
         
         // SCREENS
         function showScreen(screen) {
@@ -421,13 +467,22 @@
             if (screen === 'budget') renderBudgetItems();
         }
         
-        // SHOPPER SELECTION
+        // START SHOPPING
         function startShopping(shopper) {
             currentShopper = shopper;
-            document.getElementById('list-title').textContent = shopper === 'child' ? "👶 Child's List" : "👩 Parent's List";
             
+            // Update title
+            document.getElementById('list-title').textContent = shopper === 'child' ? "👶 My List" : "👩 My List";
+            
+            // Update badge
             const badge = document.getElementById('shopper-badge');
-            badge.innerHTML = `<span class="shopper-badge ${shopper}">${shopper === 'child' ? '👶 Child Shopping' : '👩 Parent Shopping'}</span>`;
+            badge.innerHTML = `<span class="shopper-badge ${shopper}">${shopper === 'child' ? '👶 Kid Mode' : '👩 Parent Mode'}</span>`;
+            
+            // Show/hide Lists button (parent only)
+            document.getElementById('lists-btn-row').style.display = shopper === 'parent' ? 'block' : 'none';
+            
+            // Update budget title
+            document.getElementById('budget-title').textContent = shopper === 'child' ? "💰 My Budget" : "💰 Budget";
             
             showScreen('shopping-list');
         }
@@ -471,7 +526,6 @@
                 localStorage.setItem('groceryList', JSON.stringify(myList));
             }
             
-            // Visual feedback
             btn.classList.add('added');
             btn.innerHTML = '✓ ' + item;
             
@@ -527,16 +581,21 @@
         // RECIPES
         function renderRecipes() {
             const list = document.getElementById('recipe-list');
+            const recipes = currentShopper === 'child' ? simpleRecipes : fullRecipes;
+            
+            document.getElementById('recipes-title').textContent = currentShopper === 'child' ? "🍳 Easy Recipes" : "🍳 All Recipes";
+            
             list.innerHTML = recipes.map(recipe => `
                 <div class="recipe-card" onclick="addRecipeToList('${recipe.name}')">
                     <strong>${recipe.name}</strong><br>
-                    <small>${recipe.ingredients.join(', ')}</small><br>
-                    <strong>~$${recipe.price}</strong>
+                    <small>${recipe.ingredients.join(', ')}</small>
+                    ${currentShopper === 'parent' ? `<br><strong>~$${recipe.price}</strong>` : ''}
                 </div>
             `).join('');
         }
         
         function addRecipeToList(recipeName) {
+            const recipes = currentShopper === 'child' ? simpleRecipes : fullRecipes;
             const recipe = recipes.find(r => r.name === recipeName);
             if (!recipe) return;
             
@@ -561,7 +620,7 @@
             document.getElementById('spent-display').className = total > 20 ? 'budget-over' : '';
             
             if (budgetItems.length === 0) {
-                container.innerHTML = '<div class="empty-state">Add recipes to see costs!</div>';
+                container.innerHTML = '<div class="empty-state">Tap "Add Recipe" to see costs!</div>';
                 return;
             }
             
@@ -575,8 +634,9 @@
         }
         
         function addRecipeToBudget() {
-            // Show recipes in budget mode - user picks
-            const recipeName = prompt('Enter recipe name: ' + recipes.map(r => r.name.split(' ')[0]).join(', '));
+            const recipes = currentShopper === 'child' ? simpleRecipes : fullRecipes;
+            const names = recipes.map(r => r.name.split(' ')[0]).join(', ');
+            const recipeName = prompt('Enter recipe name: ' + names);
             const recipe = recipes.find(r => r.name.toLowerCase().includes(recipeName.toLowerCase()));
             
             if (recipe) {
@@ -599,7 +659,6 @@
                 return;
             }
             
-            // Item names only, 1 per line
             let exportText = myList.join('\n');
             
             navigator.clipboard.writeText(exportText).then(() => {
