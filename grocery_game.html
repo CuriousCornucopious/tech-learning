@@ -58,6 +58,8 @@
         
         .menu-btn.shop { background: linear-gradient(135deg, #4ECDC4, #44a08d); }
         .menu-btn.lists { background: linear-gradient(135deg, #2196F3, #1976D2); }
+        .menu-btn.child { background: linear-gradient(135deg, #FF6B6B, #EE5A5A); }
+        .menu-btn.parent { background: linear-gradient(135deg, #4ECDC4, #44a08d); }
         
         .screen {
             display: none;
@@ -320,13 +322,27 @@
         
         <!-- MAIN MENU -->
         <div id="menu" class="menu">
-            <button class="menu-btn shop" onclick="showScreen('categories')">🛒 Shop</button>
+            <button class="menu-btn shop" onclick="showScreen('who')">🛒 Shop</button>
             <button class="menu-btn lists" onclick="showScreen('lists')">📋 Lists</button>
+        </div>
+        
+        <!-- WHO'S SHOPPING -->
+        <div id="who" class="screen">
+            <button class="back-btn" onclick="showScreen('menu')">⬅️ Home</button>
+            <h2>Who's Shopping?</h2>
+            <div style="display:flex;flex-direction:column;gap:15px;margin-top:20px;">
+                <button class="menu-btn child" style="background:linear-gradient(135deg, #FF6B6B, #EE5A5A);font-size:1.3rem;padding:30px;" onclick="startShopping('child')">
+                    👶 I'm Shopping for Kids
+                </button>
+                <button class="menu-btn parent" style="background:linear-gradient(135deg, #4ECDC4, #44a08d);font-size:1.3rem;padding:30px;" onclick="startShopping('parent')">
+                    👩 I'm a Parent
+                </button>
+            </div>
         </div>
         
         <!-- CATEGORIES -->
         <div id="categories" class="screen">
-            <button class="back-btn" onclick="showScreen('menu')">⬅️ Home</button>
+            <button class="back-btn" onclick="showScreen('who')">⬅️ Who's Shopping?</button>
             <h2>Pick a Category</h2>
             <div class="categories">
                 <button class="cat-btn produce" onclick="showItems('produce')">🍎 Produce</button>
@@ -440,6 +456,14 @@
         let checkedItems = JSON.parse(localStorage.getItem('checkedItems')) || [];
         let budgetItems = [];
         let listHistory = JSON.parse(localStorage.getItem('listHistory')) || [];
+        let shopperType = localStorage.getItem('shopperType') || 'parent';
+        
+        // START SHOPPING - set shopper type and go to categories
+        function startShopping(type) {
+            shopperType = type;
+            localStorage.setItem('shopperType', type);
+            showScreen('categories');
+        }
         
         // SCREENS
         function showScreen(screen) {
