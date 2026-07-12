@@ -274,7 +274,7 @@
             <button class="menu-btn shop" onclick="showScreen('shop')">🏪 Shop</button>
             <button class="menu-btn recipe" onclick="showScreen('recipes')">🍳 Recipes</button>
             <button class="menu-btn budget" onclick="showScreen('budget')">💰 Budget</button>
-            <button class="menu-btn export" onclick="exportToAnyList()" style="background:#2196F3;">📤 Export</button>
+            <button class="menu-btn export" onclick="exportList()" style="background:#2196F3;">📤 Export List</button>
             <button class="menu-btn parent" onclick="showScreen('parent')" style="background:#9C27B0;">👩 Parent</button>
         </div>
         
@@ -293,6 +293,9 @@
                 <button class="cat-btn condiments" onclick="showItems('condiments')">🧂 Condiments</button>
                 <button class="cat-btn baking" onclick="showItems('baking')">🍪 Baking</button>
                 <button class="cat-btn quick" onclick="showItems('quick')">🍱 Quick Meals</button>
+                <button class="cat-btn cleaning" onclick="showItems('cleaning')">🧹 Cleaning</button>
+                <button class="cat-btn personal" onclick="showItems('personal')">🧴 Personal</button>
+                <button class="cat-btn pets" onclick="showItems('pets')">🐾 Pets</button>
             </div>
         </div>
         
@@ -349,7 +352,7 @@
             </div>
             <div style="background:#e8f5e9; border-radius:15px; padding:15px; margin-top:15px;">
                 <p><strong>Actions:</strong></p>
-                <button class="cat-btn" style="background:#2196F3; width:100%; margin-top:10px;" onclick="exportToAnyList()">📤 Export to AnyList</button>
+                <button class="cat-btn" style="background:#2196F3; width:100%; margin-top:10px;" onclick="exportList()">📤 Export List</button>
             </div>
         </div>
     </div>
@@ -366,7 +369,10 @@
             snacks: ['Crackers', 'Graham crackers', 'Granola bars', 'Almonds', 'Peanuts', 'Dried fruit', 'Popcorn', 'Chips', 'Chocolate', 'Mac & cheese'],
             condiments: ['Ketchup', 'Mustard', 'Mayo', 'BBQ sauce', 'Hot sauce', 'Salsa', 'Salad dressing', 'Caprisuns'],
             baking: ['White sugar', 'Brown sugar', 'Baking powder', 'Baking soda', 'Yeast', 'Vanilla', 'Cornstarch', 'Chocolate chips'],
-            quick: ['Boxed mac & cheese', 'Ramen', 'Canned soup', 'Frozen burritos', 'Salad kits', 'Rotisserie chicken', 'Deli meat', 'Deli cheese']
+            quick: ['Boxed mac & cheese', 'Ramen', 'Canned soup', 'Frozen burritos', 'Salad kits', 'Rotisserie chicken', 'Deli meat', 'Deli cheese'],
+            cleaning: ['Paper towels', 'Dish soap', 'Laundry detergent', 'Fabric softener', 'All-purpose cleaner', 'Glass cleaner', 'Bathroom cleaner', 'Sponges', 'Trash bags', 'Dish scrubbers', 'Bleach', 'Floor cleaner'],
+            personal: ['Shampoo', 'Conditioner', 'Body wash', 'Toothpaste', 'Toothbrush', 'Deodorant', 'Razors', 'Shaving cream', 'Lotion', 'Sunscreen', 'Band-aids', 'Pain reliever'],
+            pets: ['Dog food', 'Cat food', 'Cat litter', 'Dog treats', 'Cat toys', 'Dog shampoo', 'Flea treatment', 'Pet bowls', 'Leash', 'Waste bags']
         };
         
         const recipes = [
@@ -570,35 +576,22 @@
             `).join('');
         }
         
-        // Export to AnyList
-        function exportToAnyList() {
+        // Export List (item names only, 1 per line)
+        function exportList() {
             if (myList.length === 0) {
                 alert('Your list is empty! Add items first.');
                 return;
             }
             
-            // Format for AnyList API import
-            let exportText = 'name,category,quantity\n';
-            myList.forEach(item => {
-                // Guess category based on item name
-                let category = 'Other';
-                if (['Bananas','Apples','Oranges','Berries','Avocados','Spinach','Lettuce','Carrots','Broccoli','Potatoes','Onions','Garlic','Tomatoes','Cucumbers','Lemons','Cilantro','Parsley','Basil'].includes(item)) category = 'Produce';
-                else if (['Chicken breasts','Chicken thighs','Ground beef','Ground turkey','Bacon','Sausage','Salmon','Tilapia','Eggs'].includes(item)) category = 'Meat';
-                else if (['Milk','Butter','Cheddar cheese','Mozzarella','Yogurt','Sour cream','Cream cheese'].includes(item)) category = 'Dairy';
-                else if (['White rice','Brown rice','Pasta','Quinoa','Oats','Bread','Tortillas','Black beans','Kidney beans','Chickpeas','Canned tomatoes','Broth','Pasta sauce','Peanut butter','Jelly','Honey','Maple syrup','Olive oil','Vegetable oil','Soy sauce','Garlic powder','Onion powder','Italian seasoning','Salt & pepper','Sugar','Flour'].includes(item)) category = 'Pantry';
-                else if (['Frozen berries','Frozen peas','Frozen corn','Ice cream','Frozen pizza','Chicken nuggets','Frozen fruit'].includes(item)) category = 'Frozen';
-                else if (['Coffee','Tea','Orange juice','Apple juice','Soda','Sparkling water','Water jug'].includes(item)) category = 'Beverages';
-                else if (['Crackers','Graham crackers','Granola bars','Almonds','Peanuts','Dried fruit','Popcorn','Chips','Chocolate','Mac & cheese'].includes(item)) category = 'Snacks';
-                
-                exportText += item + ',,' + category + ',1\n';
-            });
+            // Item names only, 1 per line
+            let exportText = myList.join('\n');
             
             // Copy to clipboard
             navigator.clipboard.writeText(exportText).then(() => {
-                alert('✅ List copied to clipboard!\n\nNow go to AnyList → Import → Paste to import your list.');
+                alert('✅ List copied to clipboard!\n\nPaste into any list app.');
             }).catch(() => {
                 // Fallback: show in alert
-                alert('✅ List ready!\n\nFormat:\n' + exportText + '\n\nCopy this manually to AnyList.');
+                alert('✅ List ready!\n\n' + exportText);
             });
         }
         
