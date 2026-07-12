@@ -25,41 +25,49 @@
 <h1>🛒 Grocery Game Outline v2.1</h1>
 
 <div class="section">
-<h2>Main Menu (1 button)</h2>
+<h2>Main Menu (2 buttons)</h2>
 
-<p><strong>🛒 Shop</strong> — That's it! Everything else flows from here.</p>
+<ul class="list">
+<li><strong>🛒 Shop</strong> → categories → add items</li>
+<li><strong>📋 Lists</strong> → current list + saved history</li>
+</ul>
 </div>
 
 <div class="section">
 <h2>Shop Flow</h2>
 
 <ol>
-<li>Click <strong>🛒 Shop</strong> → "Who's Shopping?" screen</li>
-<li>Choose <strong>👶 Child</strong> or <strong>👩 Parent</strong></li>
+<li>Click <strong>🛒 Shop</strong> → pick category → add items</li>
+<li>Goes to <strong>My Current List</strong> → add more / save / export</li>
+<li>OR click <strong>📋 Lists</strong> → view current or history</li>
 </ol>
+
+<h3>From Shop → "Who's Shopping?"</h3>
+<ul class="list">
+<li>Choose <strong>👶 Child</strong> or <strong>👩 Parent</strong></li>
+</ul>
 
 <h3>👶 Child View</h3>
 <ul class="list">
 <li>📋 My List (checkboxes, add items, NO delete)</li>
-<li>🍳 Simple Recipes (3-4 easy ones: PB&J, Grilled Cheese, Mac & Cheese, Fruit Salad)</li>
-<li>💰 Kid Budget (simple: "You have $20" - can't edit, just shows)</li>
-<li>➕ Add Items → categories</li>
+<li>🍳 Simple Recipes (3-4 easy ones: PB&J, Grilled Cheese, Mac & Cheese)</li>
+<li>💰 Kid Budget (simple: "You have $20" - can't edit)</li>
 </ul>
 
 <h3>👩 Parent View</h3>
 <ul class="list">
 <li>📋 My List (checkboxes, add items, CAN delete)</li>
-<li>🍳 Full Recipes (all 6+ with prices, ingredient editing)</li>
+<li>🍳 Full Recipes (all 6+ with prices)</li>
 <li>💰 Full Budget (editable amount, tracks spent)</li>
-<li>📋 Lists → Export / Sort by Store / History</li>
-<li>➕ Add Items → categories</li>
+<li>📋 Lists → Export / History / Sort by Store</li>
 </ul>
 </div>
 
 <div class="section done">
 <h2>✅ Built</h2>
 <ul class="list">
-<li>Single Shop button</li>
+<li>Main menu: Shop & Lists (2 buttons)</li>
+<li>Shop → categories → add items</li>
 <li>Who's Shopping → choose Child or Parent</li>
 <li>Child: list + checkboxes, no delete</li>
 <li>Parent: list + checkboxes + delete</li>
@@ -67,6 +75,9 @@
 <li>6 recipes</li>
 <li>Budget tracker</li>
 <li>Lists/Export screen</li>
+<li>Save lists with custom names</li>
+<li>History: tap to VIEW items</li>
+<li>History: load saved lists</li>
 </ul>
 </div>
 
@@ -77,8 +88,6 @@
 <li>Full recipes for Parent view (show all + prices)</li>
 <li>Kid Budget: show $20 limit, simple feedback if over</li>
 <li>Parent Budget: editable amount, tracks spent</li>
-<li>Move Recipes & Budget INTO Shop flow (not separate buttons)</li>
-<li>Rename Lists → keep under Parent only</li>
 </ul>
 </div>
 
