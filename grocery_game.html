@@ -31,16 +31,17 @@
             text-shadow: 2px 2px white;
         }
         
-        /* Single button menu */
+        /* Main menu - 2 buttons */
         .menu {
-            display: flex;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
             margin-bottom: 20px;
         }
         
         .menu-btn {
-            padding: 40px 60px;
-            font-size: 2rem;
+            padding: 40px 20px;
+            font-size: 1.8rem;
             border: none;
             border-radius: 25px;
             cursor: pointer;
@@ -56,6 +57,7 @@
         }
         
         .menu-btn.shop { background: linear-gradient(135deg, #4ECDC4, #44a08d); }
+        .menu-btn.lists { background: linear-gradient(135deg, #2196F3, #1976D2); }
         
         .screen {
             display: none;
@@ -79,29 +81,6 @@
             cursor: pointer;
             margin-bottom: 15px;
         }
-        
-        /* Who selector */
-        .who-select {
-            text-align: center;
-            padding: 30px;
-        }
-        
-        .who-btn {
-            padding: 30px 40px;
-            font-size: 2rem;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            margin: 10px;
-            transition: transform 0.2s;
-        }
-        
-        .who-btn:hover {
-            transform: scale(1.1);
-        }
-        
-        .who-btn.child { background: #FF6B6B; color: white; }
-        .who-btn.parent { background: #9C27B0; color: white; }
         
         /* Categories grid */
         .categories {
@@ -202,6 +181,30 @@
             font-size: 1rem;
         }
         
+        /* History cards */
+        .history-card {
+            background: #e8f5e9;
+            border-radius: 15px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            border: 3px solid #4CAF50;
+        }
+        
+        .history-card:hover {
+            background: #c8e6c9;
+        }
+        
+        .history-card .date {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .history-card .count {
+            font-size: 0.9rem;
+            color: #888;
+        }
+        
         /* Recipe cards */
         .recipe-card {
             background: #fff3cd;
@@ -249,7 +252,7 @@
         
         .section-btn.recipes { background: #FFE66D; color: #333; }
         .section-btn.budget { background: #95E1D3; color: #333; }
-        .section-btn.lists { background: #2196F3; }
+        .section-btn.save { background: #4CAF50; }
         
         /* Action buttons row */
         .action-row {
@@ -317,39 +320,13 @@
         
         <!-- MAIN MENU -->
         <div id="menu" class="menu">
-            <button class="menu-btn shop" onclick="showScreen('shop')">🛒 Shop</button>
-        </div>
-        
-        <!-- WHO'S SHOPPING? -->
-        <div id="shop" class="screen">
-            <h2>🛒 Who's Shopping?</h2>
-            <div class="who-select">
-                <button class="who-btn child" onclick="startShopping('child')">👶 Child</button>
-                <button class="who-btn parent" onclick="startShopping('parent')">👩 Parent</button>
-            </div>
-        </div>
-        
-        <!-- SHOPPING LIST (shared view with permissions) -->
-        <div id="shopping-list" class="screen">
-            <button class="back-btn" onclick="showScreen('shop')">⬅️ Who's Shopping?</button>
-            <h2 id="list-title">🛒 My List</h2>
-            <div id="shopper-badge"></div>
-            
-            <!-- Action buttons row -->
-            <div class="action-row">
-                <button class="section-btn recipes" onclick="showScreen('recipes')">🍳 Recipes</button>
-                <button class="section-btn budget" onclick="showScreen('budget')">💰 Budget</button>
-                <button class="section-btn lists" id="lists-btn" style="display:none;" onclick="showScreen('lists')">📋 Lists</button>
-            </div>
-            
-            <button class="add-items-btn" onclick="showScreen('categories')">➕ Add Items</button>
-            <div id="list-items" class="list-display"></div>
-            <button class="clear-btn" onclick="clearList()">🗑️ Clear All</button>
+            <button class="menu-btn shop" onclick="showScreen('categories')">🛒 Shop</button>
+            <button class="menu-btn lists" onclick="showScreen('lists')">📋 Lists</button>
         </div>
         
         <!-- CATEGORIES -->
         <div id="categories" class="screen">
-            <button class="back-btn" onclick="showScreen('shopping-list')">⬅️ Back to List</button>
+            <button class="back-btn" onclick="showScreen('menu')">⬅️ Home</button>
             <h2>Pick a Category</h2>
             <div class="categories">
                 <button class="cat-btn produce" onclick="showItems('produce')">🍎 Produce</button>
@@ -375,41 +352,60 @@
             <div id="items-grid" class="items-grid"></div>
         </div>
         
+        <!-- CURRENT LIST (shown after adding items) -->
+        <div id="current-list" class="screen">
+            <button class="back-btn" onclick="showScreen('menu')">⬅️ Home</button>
+            <h2>📋 My Current List</h2>
+            
+            <div class="action-row">
+                <button class="section-btn recipes" onclick="showScreen('recipes')">🍳 Recipes</button>
+                <button class="section-btn budget" onclick="showScreen('budget')">💰 Budget</button>
+            </div>
+            
+            <button class="add-items-btn" onclick="showScreen('categories')">➕ Add More Items</button>
+            <div id="list-items" class="list-display"></div>
+            
+            <div class="action-row" style="margin-top:15px;">
+                <button class="section-btn save" onclick="saveList()">💾 Save List</button>
+                <button class="section-btn" style="background:#2196F3;" onclick="exportList()">📤 Export</button>
+            </div>
+            <button class="clear-btn" onclick="clearList()">🗑️ Clear All</button>
+        </div>
+        
+        <!-- LISTS / HISTORY -->
+        <div id="lists" class="screen">
+            <button class="back-btn" onclick="showScreen('menu')">⬅️ Home</button>
+            <h2>📋 My Lists</h2>
+            
+            <div style="background:#e8f5e9; border-radius:15px; padding:15px; margin-bottom:15px;">
+                <p><strong>📝 Current List</strong></p>
+                <p id="current-list-count" style="color:#666;">0 items</p>
+                <button class="cat-btn" style="background:#2196F3; width:100%; margin-top:10px;" onclick="showScreen('current-list')">View / Edit</button>
+            </div>
+            
+            <h3>📜 History</h3>
+            <div id="history-list" class="list-display">
+                <div class="empty-state">No saved lists yet. Save your first list!</div>
+            </div>
+        </div>
+        
         <!-- RECIPES -->
         <div id="recipes" class="screen">
-            <button class="back-btn" onclick="showScreen('shopping-list')">⬅️ Back to List</button>
-            <h2 id="recipes-title">🍳 Recipes</h2>
+            <button class="back-btn" onclick="showScreen('current-list')">⬅️ My List</button>
+            <h2>🍳 Recipes</h2>
             <div id="recipe-list"></div>
         </div>
         
         <!-- BUDGET -->
         <div id="budget" class="screen">
-            <button class="back-btn" onclick="showScreen('shopping-list')">⬅️ Back to List</button>
-            <h2 id="budget-title">💰 Budget</h2>
+            <button class="back-btn" onclick="showScreen('current-list')">⬅️ My List</button>
+            <h2>💰 Budget</h2>
             <div class="budget-display">
                 <div>Budget: <span class="budget-amount" id="budget-display">$20</span></div>
                 <div>Spent: <span id="spent-display">$0</span></div>
             </div>
             <button class="cat-btn" style="background:#FF9800; width:100%; margin-bottom:10px;" onclick="addRecipeToBudget()">Add Recipe</button>
             <div id="budget-items"></div>
-        </div>
-        
-        <!-- LISTS (Parent only) -->
-        <div id="lists" class="screen">
-            <button class="back-btn" onclick="showScreen('shopping-list')">⬅️ Back to List</button>
-            <h2>📋 Lists</h2>
-            <div style="background:#f9f9f9; border-radius:15px; padding:15px; margin-top:15px;">
-                <p><strong>📥 Export Current List</strong></p>
-                <button class="cat-btn" style="background:#2196F3; width:100%; margin-top:10px;" onclick="exportList()">📤 Copy to Clipboard</button>
-            </div>
-            <div style="background:#e8f5e9; border-radius:15px; padding:15px; margin-top:15px;">
-                <p><strong>🗂️ List History</strong></p>
-                <p style="color:#888; font-size:0.9rem; margin-top:10px;">Coming soon!</p>
-            </div>
-            <div style="background:#fff3cd; border-radius:15px; padding:15px; margin-top:15px;">
-                <p><strong>🏪 Sort by Store</strong></p>
-                <p style="color:#888; font-size:0.9rem; margin-top:10px;">Coming soon!</p>
-            </div>
         </div>
     </div>
 
@@ -431,15 +427,7 @@
             pets: ['Dog food', 'Cat food', 'Cat litter', 'Dog treats', 'Cat toys', 'Dog shampoo', 'Flea treatment', 'Pet bowls', 'Leash', 'Waste bags']
         };
         
-        // Simple recipes for kids
-        const simpleRecipes = [
-            { name: 'PB&J 🥪', ingredients: ['Bread', 'Peanut butter', 'Jelly'], price: 3 },
-            { name: 'Grilled Cheese 🧀', ingredients: ['Bread', 'Cheese', 'Butter'], price: 4 },
-            { name: 'Mac & Cheese 🍜', ingredients: ['Boxed mac & cheese'], price: 2 }
-        ];
-        
-        // Full recipes for parents
-        const fullRecipes = [
+        const recipes = [
             { name: 'Taco Night 🌮', ingredients: ['Ground beef', 'Tortillas', 'Cheese', 'Lettuce', 'Tomatoes', 'Salsa', 'Sour cream'], price: 15 },
             { name: 'Pancakes 🥞', ingredients: ['Flour', 'Eggs', 'Milk', 'Butter', 'Maple syrup', 'Baking powder'], price: 8 },
             { name: 'PB&J 🥪', ingredients: ['Bread', 'Peanut butter', 'Jelly'], price: 3 },
@@ -451,44 +439,31 @@
         let myList = JSON.parse(localStorage.getItem('groceryList')) || [];
         let checkedItems = JSON.parse(localStorage.getItem('checkedItems')) || [];
         let budgetItems = [];
-        let currentShopper = 'child';
+        let listHistory = JSON.parse(localStorage.getItem('listHistory')) || [];
         
         // SCREENS
         function showScreen(screen) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screen).classList.add('active');
             
-            if (screen === 'shopping-list') renderList();
+            if (screen === 'current-list') renderCurrentList();
+            if (screen === 'lists') renderLists();
             if (screen === 'recipes') renderRecipes();
             if (screen === 'budget') renderBudgetItems();
         }
         
-        // START SHOPPING
-        function startShopping(shopper) {
-            currentShopper = shopper;
-            
-            // Update title
-            document.getElementById('list-title').textContent = shopper === 'child' ? "👶 My List" : "👩 My List";
-            
-            // Update badge
-            const badge = document.getElementById('shopper-badge');
-            badge.innerHTML = `<span class="shopper-badge ${shopper}">${shopper === 'child' ? '👶 Kid Mode' : '👩 Parent Mode'}</span>`;
-            
-            // Show/hide Lists button (parent only)
-            document.getElementById('lists-btn').style.display = shopper === 'parent' ? 'block' : 'none';
-            
-            // Update budget title
-            document.getElementById('budget-title').textContent = shopper === 'child' ? "💰 My Budget" : "💰 Budget";
-            
-            showScreen('shopping-list');
+        // UPDATE CURRENT LIST COUNT
+        function updateListCount() {
+            document.getElementById('current-list-count').textContent = myList.length + ' items';
         }
         
-        // RENDER LIST
-        function renderList() {
+        // RENDER CURRENT LIST
+        function renderCurrentList() {
             const container = document.getElementById('list-items');
+            updateListCount();
             
             if (myList.length === 0) {
-                container.innerHTML = '<div class="empty-state">No items yet! Click "Add Items" to start.</div>';
+                container.innerHTML = '<div class="empty-state">No items yet! Click "Add More Items" to start.</div>';
                 return;
             }
             
@@ -498,7 +473,7 @@
                     <div class="list-item ${isChecked ? 'checked' : ''}" id="item-${item.replace(/\s/g, '-')}">
                         <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleItem('${item}')">
                         <span>${item}</span>
-                        ${currentShopper === 'parent' ? `<button class="remove-btn" onclick="removeFromList('${item}')">✕</button>` : ''}
+                        <button class="remove-btn" onclick="removeFromList('${item}')">✕</button>
                     </div>
                 `;
             }).join('');
@@ -512,7 +487,7 @@
                 checkedItems.push(item);
             }
             localStorage.setItem('checkedItems', JSON.stringify(checkedItems));
-            renderList();
+            renderCurrentList();
         }
         
         // ADD ITEM
@@ -537,7 +512,8 @@
             checkedItems = checkedItems.filter(i => i !== item);
             localStorage.setItem('groceryList', JSON.stringify(myList));
             localStorage.setItem('checkedItems', JSON.stringify(checkedItems));
-            renderList();
+            renderCurrentList();
+            updateListCount();
         }
         
         // CLEAR ALL
@@ -547,7 +523,8 @@
                 checkedItems = [];
                 localStorage.setItem('groceryList', JSON.stringify(myList));
                 localStorage.setItem('checkedItems', JSON.stringify(checkedItems));
-                renderList();
+                renderCurrentList();
+                updateListCount();
             }
         }
         
@@ -567,31 +544,87 @@
                     btn.classList.add('added');
                     btn.textContent = '✓ ' + item;
                 }
-                btn.onclick = () => addToList(item, btn);
+                btn.onclick = () => {
+                    addToList(item, btn);
+                    updateListCount();
+                };
                 grid.appendChild(btn);
             });
             
             showScreen('items');
         }
         
+        // SAVE LIST
+        function saveList() {
+            if (myList.length === 0) {
+                alert('Your list is empty! Add items first.');
+                return;
+            }
+            
+            const name = prompt('Name this list:', 'Shopping List');
+            if (!name) return;
+            
+            const savedList = {
+                id: Date.now(),
+                name: name,
+                date: new Date().toLocaleDateString(),
+                items: [...myList],
+                count: myList.length
+            };
+            
+            listHistory.unshift(savedList);
+            localStorage.setItem('listHistory', JSON.stringify(listHistory));
+            
+            alert('✅ List saved!');
+            showScreen('lists');
+        }
+        
+        // RENDER LISTS / HISTORY
+        function renderLists() {
+            updateListCount();
+            const container = document.getElementById('history-list');
+            
+            if (listHistory.length === 0) {
+                container.innerHTML = '<div class="empty-state">No saved lists yet. Save your first list!</div>';
+                return;
+            }
+            
+            container.innerHTML = listHistory.map(list => `
+                <div class="history-card" onclick="loadList('${list.id}')">
+                    <strong>${list.name}</strong>
+                    <div class="date">${list.date}</div>
+                    <div class="count">${list.count} items</div>
+                </div>
+            `).join('');
+        }
+        
+        // LOAD LIST FROM HISTORY
+        function loadList(id) {
+            const list = listHistory.find(l => l.id === id);
+            if (!list) return;
+            
+            if (confirm(`Load "${list.name}"? This will replace your current list.`)) {
+                myList = [...list.items];
+                checkedItems = [];
+                localStorage.setItem('groceryList', JSON.stringify(myList));
+                localStorage.setItem('checkedItems', JSON.stringify(checkedItems));
+                showScreen('current-list');
+            }
+        }
+        
         // RECIPES
         function renderRecipes() {
             const list = document.getElementById('recipe-list');
-            const recipes = currentShopper === 'child' ? simpleRecipes : fullRecipes;
-            
-            document.getElementById('recipes-title').textContent = currentShopper === 'child' ? "🍳 Easy Recipes" : "🍳 All Recipes";
-            
             list.innerHTML = recipes.map(recipe => `
                 <div class="recipe-card" onclick="addRecipeToList('${recipe.name}')">
                     <strong>${recipe.name}</strong><br>
-                    <small>${recipe.ingredients.join(', ')}</small>
-                    ${currentShopper === 'parent' ? `<br><strong>~$${recipe.price}</strong>` : ''}
+                    <small>${recipe.ingredients.join(', ')}</small><br>
+                    <strong>~$${recipe.price}</strong>
                 </div>
             `).join('');
         }
         
         function addRecipeToList(recipeName) {
-            const recipes = currentShopper === 'child' ? simpleRecipes : fullRecipes;
             const recipe = recipes.find(r => r.name === recipeName);
             if (!recipe) return;
             
@@ -605,6 +638,7 @@
             
             localStorage.setItem('groceryList', JSON.stringify(myList));
             alert(`Added ${added} ingredients from ${recipe.name} to your list!`);
+            updateListCount();
         }
         
         // BUDGET
@@ -630,7 +664,6 @@
         }
         
         function addRecipeToBudget() {
-            const recipes = currentShopper === 'child' ? simpleRecipes : fullRecipes;
             const names = recipes.map(r => r.name.split(' ')[0]).join(', ');
             const recipeName = prompt('Enter recipe name: ' + names);
             const recipe = recipes.find(r => r.name.toLowerCase().includes(recipeName.toLowerCase()));
@@ -666,6 +699,7 @@
         
         // INIT
         showScreen('menu');
+        updateListCount();
     </script>
 </body>
 </html>
