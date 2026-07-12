@@ -339,11 +339,7 @@
             <div class="action-row">
                 <button class="section-btn recipes" onclick="showScreen('recipes')">🍳 Recipes</button>
                 <button class="section-btn budget" onclick="showScreen('budget')">💰 Budget</button>
-            </div>
-            
-            <!-- Only show Lists for Parent -->
-            <div id="lists-btn-row" style="display:none;">
-                <button class="section-btn lists" style="width:100%; margin-top:5px;" onclick="showScreen('lists')">📋 Lists</button>
+                <button class="section-btn lists" id="lists-btn" style="display:none;" onclick="showScreen('lists')">📋 Lists</button>
             </div>
             
             <button class="add-items-btn" onclick="showScreen('categories')">➕ Add Items</button>
@@ -479,7 +475,7 @@
             badge.innerHTML = `<span class="shopper-badge ${shopper}">${shopper === 'child' ? '👶 Kid Mode' : '👩 Parent Mode'}</span>`;
             
             // Show/hide Lists button (parent only)
-            document.getElementById('lists-btn-row').style.display = shopper === 'parent' ? 'block' : 'none';
+            document.getElementById('lists-btn').style.display = shopper === 'parent' ? 'block' : 'none';
             
             // Update budget title
             document.getElementById('budget-title').textContent = shopper === 'child' ? "💰 My Budget" : "💰 Budget";
