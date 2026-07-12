@@ -290,7 +290,7 @@
             <button class="menu-btn shop" onclick="showScreen('shop')">🛒 Shop</button>
             <button class="menu-btn recipe" onclick="showScreen('recipes')">🍳 Recipes</button>
             <button class="menu-btn budget" onclick="showScreen('budget')">💰 Budget</button>
-            <button class="menu-btn export" onclick="exportList()">📤 Export</button>
+            <button class="menu-btn export" onclick="showScreen('lists')">📋 Lists</button>
         </div>
         
         <!-- WHO'S SHOPPING? -->
@@ -305,7 +305,7 @@
         
         <!-- SHOPPING LIST (shared by both, permissions differ) -->
         <div id="shopping-list" class="screen">
-            <button class="back-btn" onclick="showScreen('shop')">⬅️ Who're Shopping?</button>
+            <button class="back-btn" onclick="showScreen('shop')">⬅️ Who's Shopping?</button>
             <h2 id="list-title">🛒 My List</h2>
             <div id="shopper-badge"></div>
             <button class="add-items-btn" onclick="showScreen('categories')">➕ Add Items</button>
@@ -346,6 +346,24 @@
             <button class="back-btn" onclick="showScreen('menu')">⬅️ Menu</button>
             <h2>🍳 Recipes</h2>
             <div id="recipe-list"></div>
+        </div>
+        
+        <!-- LISTS SCREEN -->
+        <div id="lists" class="screen">
+            <button class="back-btn" onclick="showScreen('menu')">⬅️ Menu</button>
+            <h2>📋 Lists</h2>
+            <div style="background:#f9f9f9; border-radius:15px; padding:15px; margin-top:15px;">
+                <p><strong>📥 Export Current List</strong></p>
+                <button class="cat-btn" style="background:#2196F3; width:100%; margin-top:10px;" onclick="exportList()">📤 Copy to Clipboard</button>
+            </div>
+            <div style="background:#e8f5e9; border-radius:15px; padding:15px; margin-top:15px;">
+                <p><strong>🗂️ List History</strong></p>
+                <p style="color:#888; font-size:0.9rem; margin-top:10px;">Coming soon: Save and view past lists!</p>
+            </div>
+            <div style="background:#fff3cd; border-radius:15px; padding:15px; margin-top:15px;">
+                <p><strong>🏪 Sort by Store</strong></p>
+                <p style="color:#888; font-size:0.9rem; margin-top:10px;">Coming soon: Assign items to stores before exporting!</p>
+            </div>
         </div>
         
         <!-- BUDGET SCREEN -->
