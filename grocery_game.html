@@ -416,11 +416,15 @@
         <div id="budget" class="screen">
             <button class="back-btn" onclick="showScreen('current-list')">⬅️ My List</button>
             <h2>💰 Budget</h2>
-            <div class="budget-display">
+            <div class="budget-display" id="budget-display-area">
                 <div>Budget: <span class="budget-amount" id="budget-display">$20</span></div>
                 <div>Spent: <span id="spent-display">$0</span></div>
             </div>
-            <button class="cat-btn" style="background:#FF9800; width:100%; margin-bottom:10px;" onclick="addRecipeToBudget()">Add Recipe</button>
+            <div id="budget-edit-area" style="display:none;margin-bottom:10px;">
+                <label>Set Budget: <input type="number" id="budget-input" value="20" style="width:80px;padding:5px;font-size:1rem;">
+                <button onclick="saveBudget()" style="padding:5px 10px;">Set</button></label>
+            </div>
+            <button class="cat-btn" style="background:#FF9800;width:100%;margin-bottom:10px;" onclick="addRecipeToBudget()">➕ Add Recipe to Budget</button>
             <div id="budget-items"></div>
         </div>
     </div>
@@ -443,7 +447,15 @@
             pets: ['Dog food', 'Cat food', 'Cat litter', 'Dog treats', 'Cat toys', 'Dog shampoo', 'Flea treatment', 'Pet bowls', 'Leash', 'Waste bags']
         };
         
-        const recipes = [
+        // Simple recipes for kids
+        const kidRecipes = [
+            { name: 'PB&J 🥪', ingredients: ['Bread', 'Peanut butter', 'Jelly'], price: 3 },
+            { name: 'Grilled Cheese 🧀', ingredients: ['Bread', 'Cheese', 'Butter'], price: 4 },
+            { name: 'Mac & Cheese 🧀', ingredients: ['Mac & Cheese box', 'Milk', 'Butter'], price: 4 }
+        ];
+        
+        // All recipes for parents
+        const parentRecipes = [
             { name: 'Taco Night 🌮', ingredients: ['Ground beef', 'Tortillas', 'Cheese', 'Lettuce', 'Tomatoes', 'Salsa', 'Sour cream'], price: 15 },
             { name: 'Pancakes 🥞', ingredients: ['Flour', 'Eggs', 'Milk', 'Butter', 'Maple syrup', 'Baking powder'], price: 8 },
             { name: 'PB&J 🥪', ingredients: ['Bread', 'Peanut butter', 'Jelly'], price: 3 },
@@ -485,6 +497,7 @@
         function renderCurrentList() {
             const container = document.getElementById('list-items');
             updateListCount();
+            const kidMode = shopperType === 'child';
             
             if (myList.length === 0) {
                 container.innerHTML = '<div class="empty-state">No items yet! Click "Add More Items" to start.</div>';
@@ -493,11 +506,12 @@
             
             container.innerHTML = myList.map(item => {
                 const isChecked = checkedItems.includes(item);
+                const removeBtn = kidMode ? '' : `<button class="remove-btn" onclick="removeFromList('${item}')">✕</button>`;
                 return `
                     <div class="list-item ${isChecked ? 'checked' : ''}" id="item-${item.replace(/\s/g, '-')}">
                         <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleItem('${item}')">
                         <span>${item}</span>
-                        <button class="remove-btn" onclick="removeFromList('${item}')">✕</button>
+                        ${removeBtn}
                     </div>
                 `;
             }).join('');
@@ -674,17 +688,20 @@
         // RECIPES
         function renderRecipes() {
             const list = document.getElementById('recipe-list');
-            list.innerHTML = recipes.map(recipe => `
+            const kidMode = shopperType === 'child';
+            const visibleRecipes = kidMode ? kidRecipes : parentRecipes;
+            list.innerHTML = visibleRecipes.map(recipe => `
                 <div class="recipe-card" onclick="addRecipeToList('${recipe.name}')">
                     <strong>${recipe.name}</strong><br>
-                    <small>${recipe.ingredients.join(', ')}</small><br>
-                    <strong>~$${recipe.price}</strong>
+                    <small>${recipe.ingredients.join(', ')}</small>
+                    ${!kidMode ? `<br><strong>~$${recipe.price}</strong>` : ''}
                 </div>
             `).join('');
         }
         
         function addRecipeToList(recipeName) {
-            const recipe = recipes.find(r => r.name === recipeName);
+            // Search in both recipe arrays
+            const recipe = parentRecipes.find(r => r.name === recipeName) || kidRecipes.find(r => r.name === recipeName);
             if (!recipe) return;
             
             let added = 0;
@@ -701,15 +718,25 @@
         }
         
         // BUDGET
+        let budgetAmount = 20;
+        
         function renderBudgetItems() {
             const container = document.getElementById('budget-items');
             const total = budgetItems.reduce((sum, item) => sum + item.price, 0);
+            const kidMode = shopperType === 'child';
             
+            // Show/hide budget edit based on mode
+            document.getElementById('budget-display-area').style.display = kidMode ? 'block' : 'none';
+            document.getElementById('budget-edit-area').style.display = kidMode ? 'none' : 'block';
+            
+            // Update displays
+            document.getElementById('budget-display').textContent = '$' + budgetAmount;
+            document.getElementById('budget-input').value = budgetAmount;
             document.getElementById('spent-display').textContent = '$' + total;
-            document.getElementById('spent-display').className = total > 20 ? 'budget-over' : '';
+            document.getElementById('spent-display').className = total > budgetAmount ? 'budget-over' : '';
             
             if (budgetItems.length === 0) {
-                container.innerHTML = '<div class="empty-state">Tap "Add Recipe" to see costs!</div>';
+                container.innerHTML = '<div class="empty-state">Tap "Add Recipe to Budget" to see costs!</div>';
                 return;
             }
             
@@ -717,15 +744,23 @@
                 <div class="list-item">
                     <span>${item.name}</span>
                     <span>$${item.price}</span>
-                    <button class="remove-btn" onclick="removeBudgetItem(${idx})">✕</button>
+                    ${!kidMode ? `<button class="remove-btn" onclick="removeBudgetItem(${idx})">✕</button>` : ''}
                 </div>
             `).join('');
         }
         
+        function saveBudget() {
+            const input = document.getElementById('budget-input');
+            budgetAmount = parseInt(input.value) || 20;
+            renderBudgetItems();
+        }
+        
         function addRecipeToBudget() {
-            const names = recipes.map(r => r.name.split(' ')[0]).join(', ');
+            const kidMode = shopperType === 'child';
+            const allRecipes = [...parentRecipes, ...kidRecipes];
+            const names = allRecipes.map(r => r.name.split(' ')[0]).join(', ');
             const recipeName = prompt('Enter recipe name: ' + names);
-            const recipe = recipes.find(r => r.name.toLowerCase().includes(recipeName.toLowerCase()));
+            const recipe = allRecipes.find(r => r.name.toLowerCase().includes(recipeName.toLowerCase()));
             
             if (recipe) {
                 budgetItems.push({ name: recipe.name, price: recipe.price });
