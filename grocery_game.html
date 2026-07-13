@@ -122,7 +122,43 @@
             gap: 10px;
             margin-top: 15px;
         }
-        
+
+        .item-qty {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        .qty-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            border: none;
+            background: #4CAF50;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .qty-btn:hover {
+            background: #388E3C;
+        }
+
+        .item-price {
+            font-size: 0.85rem;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .item-qty-num {
+            font-size: 1rem;
+            font-weight: bold;
+            min-width: 24px;
+            text-align: center;
+        }
+
         .item-btn {
             padding: 15px 10px;
             font-size: 1rem;
@@ -465,10 +501,24 @@
         ];
         
         let myList = JSON.parse(localStorage.getItem('groceryList')) || [];
+        let itemQuantities = JSON.parse(localStorage.getItem('itemQuantities')) || {};
         let checkedItems = JSON.parse(localStorage.getItem('checkedItems')) || [];
         let budgetItems = [];
         let listHistory = JSON.parse(localStorage.getItem('listHistory')) || [];
         let shopperType = localStorage.getItem('shopperType') || 'parent';
+        
+        // Sample item prices for teaching tool
+        const itemPrices = {
+            'Bananas': 0.59, 'Apples': 1.49, 'Oranges': 0.99, 'Berries': 3.99, 'Avocados': 1.99,
+            'Spinach': 2.99, 'Lettuce': 1.99, 'Carrots': 0.99, 'Broccoli': 1.49, 'Potatoes': 0.99,
+            'Chicken breasts': 5.99, 'Chicken thighs': 4.49, 'Ground beef': 4.99, 'Bacon': 4.99,
+            'Milk': 3.49, 'Butter': 3.99, 'Cheese': 4.49, 'Eggs': 3.99,
+            'White rice': 2.49, 'Pasta': 1.49, 'Bread': 2.99, 'Peanut butter': 3.49
+        };
+
+        function getItemPrice(item) {
+            return itemPrices[item] || 0;
+        }
         
         // START SHOPPING - set shopper type and go to categories
         function startShopping(type) {
@@ -504,13 +554,20 @@
                 return;
             }
             
-            container.innerHTML = myList.map(item => {
+            // Group items by name and count quantities
+            const itemCounts = {};
+            myList.forEach(item => {
+                itemCounts[item] = (itemCounts[item] || 0) + 1;
+            });
+            
+            container.innerHTML = Object.entries(itemCounts).map(([item, count]) => {
                 const isChecked = checkedItems.includes(item);
                 const removeBtn = kidMode ? '' : `<button class="remove-btn" onclick="removeFromList('${item}')">✕</button>`;
+                const qtyDisplay = count > 1 ? ` <span style="font-size:0.85rem;color:#666;">(${count})</span>` : '';
                 return `
                     <div class="list-item ${isChecked ? 'checked' : ''}" id="item-${item.replace(/\s/g, '-')}">
                         <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleItem('${item}')">
-                        <span>${item}</span>
+                        <span>${item}</span>${qtyDisplay}
                         ${removeBtn}
                     </div>
                 `;
@@ -530,17 +587,26 @@
         
         // ADD ITEM
         function addToList(item, btn) {
+            // Get quantity for this item
+            const qty = itemQuantities[item] || 1;
+            
             if (!myList.includes(item)) {
-                myList.push(item);
+                // Add item multiple times based on quantity
+                for (let i = 0; i < qty; i++) {
+                    myList.push(item);
+                }
                 localStorage.setItem('groceryList', JSON.stringify(myList));
             }
             
             btn.classList.add('added');
-            btn.innerHTML = '✓ ' + item;
+            btn.innerHTML = '✓ ' + item + (qty > 1 ? ` (${qty})` : '');
             
             setTimeout(() => {
                 btn.classList.remove('added');
                 btn.innerHTML = item;
+                // Clear quantity after adding
+                delete itemQuantities[item];
+                localStorage.setItem('itemQuantities', JSON.stringify(itemQuantities));
             }, 500);
         }
         
@@ -577,11 +643,13 @@
             categoryItems.forEach(item => {
                 const btn = document.createElement('button');
                 btn.className = 'item-btn';
-                btn.textContent = item;
-                if (myList.includes(item)) {
-                    btn.classList.add('added');
-                    btn.textContent = '✓ ' + item;
-                }
+                
+                // Add quantity controls for items
+                const qty = itemQuantities[item] || 1;
+                const price = getItemPrice(item);
+                const priceDisplay = price > 0 ? `<span class="item-price" style="margin-left:8px;font-size:0.85rem;color:#4CAF50;font-weight:bold;">$${price.toFixed(2)}</span>` : '';
+                
+                btn.innerHTML = `<div style="display:flex;align-items:center;width:100%;"><span style="flex:1;">${item}</span>${priceDisplay}</div>`;
                 btn.onclick = () => {
                     addToList(item, btn);
                     updateListCount();
@@ -718,7 +786,7 @@
         }
         
         // BUDGET
-        let budgetAmount = 20;
+        let budgetAmount = JSON.parse(localStorage.getItem('budgetAmount')) || 20;
         
         function renderBudgetItems() {
             const container = document.getElementById('budget-items');
@@ -752,6 +820,8 @@
         function saveBudget() {
             const input = document.getElementById('budget-input');
             budgetAmount = parseInt(input.value) || 20;
+            // Save budget to localStorage
+            localStorage.setItem('budgetAmount', JSON.stringify(budgetAmount));
             renderBudgetItems();
         }
         
